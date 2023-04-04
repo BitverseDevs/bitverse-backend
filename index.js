@@ -8,7 +8,6 @@ const app = express();
 const Mailgun = require('mailgun.js');
 const mailgun = new Mailgun(formData)
 const DOMAIN = process.env.MAILGUN_DOMAIN;
-const api_key = process.env.MAILGUN_API_KEY;
 const mg = mailgun.client({username: 'api', key: process.env.MAILGUN_API_KEY });
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -22,8 +21,6 @@ app.get('/api', function(req, res) {
 });
 
 app.post('/send-email', (req, res) => {
-  console.log('API Key:', api_key);
-  console.log('Domain:', DOMAIN);
   const {
     from,
     to,
@@ -148,7 +145,7 @@ app.post('/send-email', (req, res) => {
     )
   .catch(err => {
     res.status(500).send('Error sending email');
-    console.error(err, process.env.MAILGUN_API_KEY, " hyaaa " ,process.env.MAILGUN_DOMAIN )
+    console.error(err)
     }
     );
 });
