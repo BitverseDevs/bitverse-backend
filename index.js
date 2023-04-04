@@ -21,7 +21,9 @@ app.get('/api', function(req, res) {
   res.json(data);
 });
 
-app.post('/send-email', async (req, res) => {
+app.post('/send-email', (req, res) => {
+  console.log('API Key:', api_key);
+  console.log('Domain:', DOMAIN);
   const {
     from,
     to,
