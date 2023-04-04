@@ -1,58 +1,152 @@
 const express = require('express');
-const nodemailer = require('nodemailer');
 const bodyParser = require('body-parser');
+const formData = require('form-data');
 const app = express();
+
+const Mailgun = require('mailgun.js');
+const mailgun = new Mailgun(formData)
+const DOMAIN = 'sandboxb6f1c35cdc4f47f9bc0614150d7bd2d1.mailgun.org';
+const api_key = '074b3c584a5ea1ee2610bf8fe50169f1-81bd92f8-8ab860b3';
+const mg = mailgun.client({username: 'api', key: process.env.MAILGUN_API_KEY || api_key});
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.get('/api', function(req, res) {
   const data = {
-    message: 'Hello, world!'
+    message: "hello world",
   };
   res.json(data);
 });
 
 app.post('/send-email', async (req, res) => {
-  // Create a transporter object
-  // const transporter = nodemailer.createTransport({
-  //   service: 'gmail',
-  //   auth: {
-  //     user: 'bitverse001@gmail.com',
-  //     pass: 'bitverse123456'
-  //   }
-  // });
-  let testAccount = await nodemailer.createTestAccount();
+  const {
+    from,
+    to,
+    subject,
+    fullName,
+    email,
+    companyName,
+    contactNumber,
+    numberOfEmployees,
+    datePreferences,
+    timePreferences,
+    remarks
+  } = req.body;
+  // const received = req.body.meow;
 
-  let transporter = nodemailer.createTransport({
-    host: "smtp.ethereal.email",
-    port: 587,
-    secure: false, // true for 465, false for other ports
-    auth: {
-      user: testAccount.user, // generated ethereal user
-      pass: testAccount.pass, // generated ethereal password
-    },
-  });
-
-
-  // Define your email options
-  const mailOptions = {
-    from: 'bitverse001@gmail.com',
-    to: req.body.to, // Get the recipient email from the request body
-    subject: req.body.subject, // Get the email subject from the request body
-    text: req.body.message // Get the email message from the request body
-  };
-
-  // Send the email
-  await transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.log(error);
-      res.status(500).send('Error sending email');
-    } else {
-      console.log('Email sent: ' + info.response);
-      res.status(200).send('Email sent successfully');
+  mg.messages.create('sandboxb6f1c35cdc4f47f9bc0614150d7bd2d1.mailgun.org', {
+    from: `Programmed <${from}>`,
+    to: to,
+    subject: `${subject} for ${companyName}`,
+    // text: received,
+    html: `
+    <!DOCTYPE html>
+    <html lang="en">
+        <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f1f1f1;
+                margin: 0;
+                padding: 0;
+            }
+            .email-container {
+                max-width: 600px;
+                margin: 0 auto;
+                background-color: #ffffff;
+                padding: 130px 20px 20px 20px;
+                position: relative;
+            }
+            .header {
+                background-color: #1a237e;
+                color: #ffffff;
+                padding: 10px 20px;
+                font-size: 24px;
+                font-weight: bold;
+                position: relative;
+                z-index: 10;
+                border-radius: 40px 10px 40px 10px / 20px 10px 20px 10px;
+                text-align: center;
+            }
+            .info {
+                margin-top: 20px;
+                position: relative;
+                z-index: 10;
+            }
+            .label {
+                color: #1a237e;
+                font-weight: bold;
+            }
+            .value {
+                color: #424242;
+            }
+            .row {
+                margin-bottom: 10px;
+            }
+            .logo {
+                width: 100%;
+                height: auto;
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+                position: absolute;
+                z-index: 1;
+                top: 0;
+                left: 0;
+            }
+        </style>
+        </head>
+        <body>
+            <div class="email-container">
+                <img src="https://site.bitverseph.com/assets/z-bv-banner-about.png" alt="Company Logo" class="logo">    
+                <div class="header">
+                Demo Request For: ${companyName}
+                </div>
+                <div class="info">
+                    <div class="row">
+                        <span class="label">Full Name:</span> <span class="value">${fullName}</span>
+                    </div>
+                    <div class="row">
+                        <span class="label">Email:</span> <span class="value">${email}</span>
+                    </div>
+                    <div class="row">
+                        <span class="label">Company Name:</span> <span class="value">${companyName}</span>
+                    </div>
+                    <div class="row">
+                        <span class="label">Contact Number:</span> <span class="value">${contactNumber}</span>
+                    </div>
+                    <div class="row">
+                        <span class="label">Number of Employees:</span> <span class="value">${numberOfEmployees}</span>
+                    </div>
+                    <div class="row">
+                        <span class="label">Date Preference:</span> <span class="value">${datePreferences}</span>
+                    </div>
+                    <div class="row">
+                        <span class="label">Time Preference:</span> <span class="value">${timePreferences}</span>
+                    </div>
+                </div>
+                <pre style="background-color: #f1f1f1; padding: 10px; border-radius: 5px;">
+                  Remarks: ${remarks}
+                </pre>
+            </div>
+        </body>
+    </html>
+`
+  })
+  .then(msg => 
+    {
+    res.status(200).send(`Email sent successfully, ${req.body}`) 
+    console.log(msg)
     }
-  });
+    )
+  .catch(err => {
+    res.status(500).send('Error sending email');
+    console.error(err)
+    }
+    );
 });
 
 
