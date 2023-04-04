@@ -1,12 +1,14 @@
+require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const formData = require('form-data');
 const app = express();
 
+
 const Mailgun = require('mailgun.js');
 const mailgun = new Mailgun(formData)
-const DOMAIN = 'sandboxb6f1c35cdc4f47f9bc0614150d7bd2d1.mailgun.org';
-const api_key = '074b3c584a5ea1ee2610bf8fe50169f1-81bd92f8-8ab860b3';
+const DOMAIN = process.env.MAILGUN_DOMAIN;
+const api_key = process.env.MAILGUN_API_KEY;
 const mg = mailgun.client({username: 'api', key: process.env.MAILGUN_API_KEY || api_key});
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -35,7 +37,7 @@ app.post('/send-email', async (req, res) => {
   } = req.body;
   // const received = req.body.meow;
 
-  mg.messages.create('sandboxb6f1c35cdc4f47f9bc0614150d7bd2d1.mailgun.org', {
+  mg.messages.create(DOMAIN, {
     from: `Programmed <${from}>`,
     to: to,
     subject: `${subject} for ${companyName}`,
