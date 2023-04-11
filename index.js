@@ -158,7 +158,7 @@ app.post('/send-email', (req, res) => {
                     </div>
                 </div>
                 <pre style="background-color: #f1f1f1; padding: 10px; border-radius: 5px;">
-                  Remarks: ${remarks}
+                  Remarks: ${(remarks !== undefined ? remarks : 'Customer Did Not Specified any additional Remarks')}
                 </pre>
             </div>
         </body>
