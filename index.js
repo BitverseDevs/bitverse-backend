@@ -12,7 +12,7 @@ const DOMAIN = process.env.MAILGUN_DOMAIN;
 
 const mg = mailgun.client({username: 'api', key: process.env.MAILGUN_API_KEY });
 const corsOption = {
-    origin: 'http://localhost:3000',
+    origin: ['http://localhost:3000', 'https://site.bitverseph.com/'],
     optionsSuccessStatus: 200
 };
 
