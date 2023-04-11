@@ -11,10 +11,28 @@ const mailgun = new Mailgun(formData);
 const DOMAIN = process.env.MAILGUN_DOMAIN;
 
 const mg = mailgun.client({username: 'api', key: process.env.MAILGUN_API_KEY });
+
+const allowedOrigins = [
+    'http://localhost:3000', 
+    'https://site.bitverseph.com/'
+];
+
+// const corsOption = {
+//     origin: 'http://localhost:3000',
+//     optionsSuccessStatus: 200
+// };
+
 const corsOption = {
-    origin: ['http://localhost:3000', 'https://site.bitverseph.com/'],
+    origin: function (origin, callback){
+        if (allowedOrigins.indexOf(origin) !== -1 || !origin){
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     optionsSuccessStatus: 200
 };
+
 
 app.use(cors(corsOption));
 app.use(bodyParser.urlencoded({ extended: false }));
