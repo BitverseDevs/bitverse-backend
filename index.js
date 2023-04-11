@@ -14,7 +14,7 @@ const mg = mailgun.client({username: 'api', key: process.env.MAILGUN_API_KEY });
 
 const allowedOrigins = [
     'http://localhost:3000', 
-    'https://site.bitverseph.com/'
+    'https://site.bitverseph.com'
 ];
 
 // const corsOption = {
