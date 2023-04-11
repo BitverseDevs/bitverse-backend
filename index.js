@@ -3,13 +3,20 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const formData = require('form-data');
 const app = express();
-
-
+const cors = require('cors');
 const Mailgun = require('mailgun.js');
-const mailgun = new Mailgun(formData)
-const DOMAIN = process.env.MAILGUN_DOMAIN;
-const mg = mailgun.client({username: 'api', key: process.env.MAILGUN_API_KEY });
 
+const port = process.env.PORT || 8888;
+const mailgun = new Mailgun(formData);
+const DOMAIN = process.env.MAILGUN_DOMAIN;
+
+const mg = mailgun.client({username: 'api', key: process.env.MAILGUN_API_KEY });
+const corsOption = {
+    origin: 'http://localhost:3000',
+    optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOption));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
@@ -151,7 +158,7 @@ app.post('/send-email', (req, res) => {
 });
 
 
-const port = process.env.PORT || 8888;
+
 app.listen(port, function() {
   console.log(`Server listening on port ${port}`);
 });
