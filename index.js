@@ -12,8 +12,12 @@ const DOMAIN = process.env.MAILGUN_DOMAIN;
 
 const mg = mailgun.client({username: 'api', key: process.env.MAILGUN_API_KEY });
 
-const allowedOrigins = [
-    'http://localhost:3000', 
+// const allowedOrigins = [
+//     'http://localhost:3000', 
+//     'https://site.bitverseph.com'
+// ];
+
+const allowedOrigins = [ 
     'https://site.bitverseph.com'
 ];
 
@@ -59,10 +63,9 @@ app.post('/send-email', (req, res) => {
     timePreferences,
     remarks
   } = req.body;
-  // const received = req.body.meow;
 
   mg.messages.create(DOMAIN, {
-    from: `Programmed <${from}>`,
+    from: `Customer Email <${from}>`,
     to: to,
     subject: `${subject} for ${companyName}`,
     // text: received,
