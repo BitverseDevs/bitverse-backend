@@ -1,7 +1,7 @@
 // Include authService and handle incoming HTTP requests for registration and login
 
 const authService = require('../services/authService');
-const { Authenticator } = require('otplib');
+const { authenticator: Authenticator } = require('otplib');
 
 const register = async (req, res) => {
   const { email, password } = req.body;
@@ -12,7 +12,13 @@ const register = async (req, res) => {
     await authService.register(email, password);
     res.status(201).send('User registered successfully');
   } catch (error) {
-    res.status(500).send('Error registering user');
+    if(error.code === 11000){
+      // Duplicate Email Error
+      res.status(409).send('Email already in use');
+    } else {
+      // General Server Error
+      res.status(500).send('Error registering user');
+    }
     console.error(error);
   }
 };
@@ -32,7 +38,7 @@ const login = async (req, res) => {
         });
   
         if (!isTwoFactorTokenValid) {
-          res.status(401).send('Invalid two-factor authentication token');
+          res.status(401).send('Invalid/Missing two-factor authentication token');
           return;
         }
       }
