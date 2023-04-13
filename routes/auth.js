@@ -4,5 +4,6 @@ const authController = require('../controllers/authController');
 
 router.post('/register', authController.register);
 router.post('/login', authController.login);
+router.post('/verify-recaptcha', authController.verifyRecaptcha);
 
 module.exports = router;
