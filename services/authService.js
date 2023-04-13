@@ -4,13 +4,13 @@
 
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { Authenticator } = require('otplib');
+const { authenticator: Authenticator } = require('otplib');
 const User = require('../models/User');
 
 const register = async (email, password) => {
   const hashedPassword = await bcrypt.hash(password, 10);
-  const twoFactorSecret = generate2FASecret();
-  const newUser = new User({ email, password: hashedPassword, twoFactorSecret });
+  // const twoFactorSecret = generate2FASecret();
+  const newUser = new User({ email, password: hashedPassword, isTwoFactorEnabled: false });
   return await newUser.save();
 };
 
