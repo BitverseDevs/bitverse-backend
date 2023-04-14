@@ -1,13 +1,12 @@
 // Include authService and handle incoming HTTP requests for registration and login
 
 const authService = require('../services/authService');
-const axios = require('axios');
 const { authenticator: Authenticator } = require('otplib');
 
 const register = async (req, res) => {
   const { email, password } = req.body;
 
-  // Add reCaptcha validation here
+  //TODO: Add reCaptcha validation here
 
   try {
     await authService.register(email, password);
@@ -51,11 +50,22 @@ const login = async (req, res) => {
   }
 };
 
-const verifyRecaptcha = async (req, res) => {
+const verifyRecaptchaV3 = async (req, res) => {
   const recaptchaToken = req.body.recaptchaToken;
 
   try {
-    await authService.verifyRecaptcha(recaptchaToken);
+    await authService.verifyRecaptchaV3(recaptchaToken);
+    res.status(200).send({ success: true });
+  } catch (error) {
+    res.status(401).send({ success: false, message: error.message });
+  }
+};
+
+const verifyRecaptchaV2 = async (req, res) => {
+  const recaptchaToken = req.body.recaptchaToken;
+
+  try {
+    await authService.verifyRecaptchaV2(recaptchaToken);
     res.status(200).send({ success: true });
   } catch (error) {
     res.status(401).send({ success: false, message: error.message });
@@ -65,5 +75,6 @@ const verifyRecaptcha = async (req, res) => {
 module.exports = {
   register,
   login,
-  verifyRecaptcha,
+  verifyRecaptchaV3,
+  verifyRecaptchaV2,
 };

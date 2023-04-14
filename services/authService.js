@@ -4,23 +4,9 @@
 
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const axios = require('axios');
 const { authenticator: Authenticator } = require('otplib');
 const User = require('../models/User');
-
-const verifyRecaptcha = async (recaptchaToken) => {
-  const secretKey = process.env.RECAPTCHA_SECRET_KEY;
-  try {
-    const response = await axios.post(`https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${recaptchaToken}`);
-    const { success } = response.data;
-
-    if (!success) {
-      throw new Error('Invalid reCAPTCHA token');
-    }
-  } catch (error) {
-    throw new Error('Error verifying reCAPTCHA token');
-  }
-};
+const { verifyRecaptchaV3 } = require('../helpers/captcha');
 
 const register = async (email, password) => {
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -31,7 +17,7 @@ const register = async (email, password) => {
 
 const login = async (email, password, twoFactorToken, recaptchaToken) => {
   if(recaptchaToken){ // TO DO: We can modify this statement to be optionally switchable
-    await verifyRecaptcha(recaptchaToken);
+    await verifyRecaptchaV3(recaptchaToken);
   }
   const user = await User.findOne({ email });
   if (!user) {
@@ -78,5 +64,4 @@ module.exports = {
   verifyToken,
   generate2FASecret,
   verify2FAToken,
-  verifyRecaptcha,
 };
