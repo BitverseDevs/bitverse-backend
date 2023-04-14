@@ -1,6 +1,7 @@
 // Include authService and handle incoming HTTP requests for registration and login
 
 const authService = require('../services/authService');
+const axios = require('axios');
 const { authenticator: Authenticator } = require('otplib');
 
 const register = async (req, res) => {
@@ -24,10 +25,10 @@ const register = async (req, res) => {
 };
 
 const login = async (req, res) => {
-  const { email, password, twoFactorToken } = req.body;
+  const { email, password, twoFactorToken, recaptchaToken } = req.body;
 
   try {
-    const { token, user } = await authService.login(email, password);
+    const { token, user } = await authService.login(email, password, twoFactorToken, recaptchaToken);
 
     // Check if the user has 2FA enabled
     if (user.twoFactorSecret) {
@@ -50,7 +51,19 @@ const login = async (req, res) => {
   }
 };
 
+const verifyRecaptcha = async (req, res) => {
+  const recaptchaToken = req.body.recaptchaToken;
+
+  try {
+    await authService.verifyRecaptcha(recaptchaToken);
+    res.status(200).send({ success: true });
+  } catch (error) {
+    res.status(401).send({ success: false, message: error.message });
+  }
+};
+
 module.exports = {
   register,
   login,
+  verifyRecaptcha,
 };
