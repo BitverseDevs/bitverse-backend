@@ -3,9 +3,11 @@ const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 dotenv.config();
 
-const allowedOrigins = [
-  'https://site.bitverseph.com',
-];
+// const allowedOrigins = [
+//   'https://site.bitverseph.com',
+// ];
+
+const allowedOrigins = process.env.ALLOWED_ORIGINS;
 
 const databaseUrl = process.env.MONGODB_URI || 'mongodb://localhost:27017/your_db_name';
 
