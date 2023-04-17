@@ -3,6 +3,7 @@ const router = express.Router();
 const formData = require('form-data');
 const Mailgun = require('mailgun.js');
 const { mailgunConfig } = require('../config/config');
+const recaptchaMiddleware = require('../middleware/recaptchaMiddleware');
 
 const mailgun = new Mailgun(formData);
 const mg = mailgun.client({ username: 'api', key: mailgunConfig.apiKey });
@@ -14,7 +15,7 @@ router.get('/api', (req, res) => {
   res.json(data);
 });
 
-router.post('/send-email', (req, res) => {
+router.post('/send-email', recaptchaMiddleware, (req, res) => {
   const {
     from,
     to,
