@@ -14,6 +14,7 @@ const databaseUrl = process.env.MONGODB_URI || 'mongodb://localhost:27017/your_d
 
 const corsOptions = {
   origin: function (origin, callback) {
+    console.log("Incoming request origin:", origin); 
     if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
       callback(null, true);
     } else {
