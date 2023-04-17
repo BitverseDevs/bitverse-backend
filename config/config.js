@@ -22,6 +22,8 @@ const corsOptions = {
     }
   },
   optionsSuccessStatus: 200,
+  // preflightContinue: false, // Added 04.17
+  // credentials: true, // Added 04.17
 };
 
 mongoose.connect(databaseUrl, {
