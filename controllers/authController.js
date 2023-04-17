@@ -27,10 +27,10 @@ const login = async (req, res) => {
   const { email, password, twoFactorToken, recaptchaToken } = req.body;
 
   try {
-    const { token, user } = await authService.login(email, password, twoFactorToken, recaptchaToken);
+    const { token, user } = await authService.login(email, password, recaptchaToken);
 
     // Check if the user has 2FA enabled
-    if (user.twoFactorSecret) {
+    if (user.twoFactorSecret && user.isTwoFactorEnabled) {
         // Verify the 2FA token using the Authenticator library and the user's `twoFactorSecret`
         const isTwoFactorTokenValid = Authenticator.verify({
           token: twoFactorToken,
