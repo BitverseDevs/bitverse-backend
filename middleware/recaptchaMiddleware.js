@@ -4,7 +4,7 @@ const { verifyRecaptchaV2 } = require('../helpers/captcha');
 
 const recaptchaMiddleware = async (req, res, next) => {
     try {
-      const recaptchaToken = req.body.recaptchaToken;
+      const recaptchaToken = req.body.recaptchaResponse;
       if (!recaptchaToken) {
         throw new Error('reCAPTCHA token is required');
       }
