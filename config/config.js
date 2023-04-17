@@ -7,7 +7,7 @@ dotenv.config();
 //   'https://site.bitverseph.com',
 // ];
 
-const allowedOrigins = process.env.ALLOWED_ORIGINS;
+const allowedOrigins = process.env.ALLOWED_ORIGINS.split(',');
 
 const databaseUrl = process.env.MONGODB_URI || 'mongodb://localhost:27017/your_db_name';
 
