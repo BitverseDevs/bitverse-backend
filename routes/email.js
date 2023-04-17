@@ -16,6 +16,7 @@ router.get('/api', (req, res) => {
 });
 
 router.post('/send-email', recaptchaMiddleware, (req, res) => {
+// router.post('/send-email', (req, res) => {
   const {
     from,
     to,
