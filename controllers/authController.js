@@ -14,10 +14,10 @@ const register = async (req, res) => {
   } catch (error) {
     if(error.code === 11000){
       // Duplicate Email Error
-      res.status(409).send('Email already in use');
+      res.status(409).send({ error: 'Email already in use'});
     } else {
       // General Server Error
-      res.status(500).send('Error registering user');
+      res.status(500).send({ error: 'Error registering user'});
     }
     console.error(error);
   }
@@ -38,14 +38,14 @@ const login = async (req, res) => {
         });
   
         if (!isTwoFactorTokenValid) {
-          res.status(401).send('Invalid/Missing two-factor authentication token');
+          res.status(401).send({ error: 'Invalid/Missing two-factor authentication token'});
           return;
         }
       }
   
       res.status(200).send({ token });
   } catch (error) {
-    res.status(401).send('Invalid email or password');
+    res.status(401).send({ error: 'Invalid email or password'});
     console.error(error);
   }
 };
